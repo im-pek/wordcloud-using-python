@@ -1,0 +1,51 @@
+import csv
+from wordcloud import WordCloud,STOPWORDS
+import pandas
+
+
+#read first column of csv file to string of words seperated
+#by tab
+
+your_list = []
+with open('japanese occupation microsoft academic (w time).csv', 'rb') as f:
+    reader = csv.reader(f)
+
+colnames = ['title', 'date']
+
+data = pandas.read_csv('japanese occupation microsoft academic (w time).csv', names=colnames)
+
+
+your_list = data.title.tolist()
+your_list2=data.date.tolist()
+
+cleanedList = [x for x in your_list if str(x) != 'nan']
+
+string=''.join(cleanedList)
+#    your_list = '\t'.join([i[0] for i in reader])
+
+rows=zip(your_list,your_list2)
+
+with open('no more nan.csv', "w") as f:
+    writer = csv.writer(f)
+    for row in rows:
+        writer.writerow(row)
+
+
+# Generate a word cloud images
+wordcloud = WordCloud().generate(string)
+stopwords = set(STOPWORDS)
+# Display the generated image:
+# the matplotlib way:
+import matplotlib.pyplot as plt
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+
+# lower max_font_size
+wordcloud = WordCloud(max_font_size=40,stopwords=stopwords).generate(your_list)
+fig = plt.figure(1)
+plt.figure()
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+fig.savefig("word1.png", dpi=10000)
